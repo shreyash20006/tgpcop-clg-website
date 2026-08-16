@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { motion, useReducedMotion } from 'framer-motion'
-import { ShieldCheck, Award, Landmark, ArrowRight, Pill } from 'lucide-react'
+import { ShieldCheck, Award, Landmark, ArrowRight } from 'lucide-react'
 import SectionHeading from '@/components/ui/SectionHeading'
 import PageContainer from '@/components/layout/PageContainer'
 import { SITE } from '@/lib/site'
@@ -18,20 +18,23 @@ export default function AboutSection() {
     <section className="py-16 md:py-24 bg-light-bg">
       <PageContainer>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
-          {/* Image placeholder */}
+          {/* Campus video */}
           <motion.div
             initial={{ opacity: 0, x: reduceMotion ? 0 : -32 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: '-80px' }}
             transition={{ duration: reduceMotion ? 0 : 0.6, ease: [0.22, 1, 0.36, 1] }}
-            className="relative rounded-2xl overflow-hidden bg-gradient-to-br from-navy-900 via-navy-800 to-primary-600 aspect-[4/3] flex items-center justify-center"
+            className="relative rounded-2xl overflow-hidden bg-navy-950 aspect-[4/3]"
           >
-            <Pill className="w-20 h-20 text-white/15" aria-hidden="true" />
-            <div className="absolute bottom-0 inset-x-0 bg-navy-950/70 backdrop-blur-sm px-5 py-3">
-              <p className="text-white/80 text-xs font-body">
-                Campus photograph will appear here once official imagery is published.
-              </p>
-            </div>
+            <video
+              src="https://res.cloudinary.com/dsqxboxoc/video/upload/v1786899422/tgpcop_nagpur_14050525_222641717_le6ze7.mp4"
+              autoPlay
+              muted
+              loop
+              playsInline
+              className="absolute inset-0 w-full h-full object-cover"
+              aria-label="TGPCOP campus video"
+            />
           </motion.div>
 
           {/* Copy */}
