@@ -17,6 +17,7 @@ interface ProgramCard {
   eligibility: string | null
   description: string | null
   image_url: string | null
+  video_url: string | null
 }
 
 const fallbackPrograms: ProgramCard[] = [
@@ -30,7 +31,8 @@ const fallbackPrograms: ProgramCard[] = [
     eligibility: 'As per DTE Maharashtra / DBATU norms',
     description:
       'A comprehensive undergraduate degree covering pharmaceutical sciences, from drug discovery to patient care.',
-    image_url: null,
+    image_url: 'https://res.cloudinary.com/dsqxboxoc/image/upload/v1786900000/tgpcop_nagpur_14050525_223357831_n9vrtj.jpg',
+    video_url: null,
   },
   {
     id: 'dpharm',
@@ -43,6 +45,7 @@ const fallbackPrograms: ProgramCard[] = [
     description:
       'A practice-oriented diploma preparing students for careers in community and hospital pharmacy.',
     image_url: null,
+    video_url: 'https://res.cloudinary.com/dsqxboxoc/video/upload/v1786899946/tgpcop_nagpur_14050525_223403863_y6o4tv.mp4',
   },
 ]
 
@@ -65,6 +68,7 @@ export default function ProgramsSection() {
             eligibility: p.eligibility,
             description: p.description,
             image_url: p.image_url,
+            video_url: (p as any).video_url ?? null,
           }))
         )
       }
@@ -92,17 +96,27 @@ export default function ProgramsSection() {
                 transition={{ duration: reduceMotion ? 0 : 0.5, delay: reduceMotion ? 0 : i * 0.12 }}
                 className="group bg-white border border-border rounded-2xl overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all duration-200"
               >
-                {/* Image */}
+                {/* Media */}
                 <div
                   className={`h-52 relative overflow-hidden bg-gradient-to-br ${
                     isBpharm ? 'from-navy-900 to-primary-500' : 'from-primary-600 via-navy-800 to-accent-500'
                   }`}
                 >
-                  {program.image_url ? (
+                  {program.video_url ? (
+                    <video
+                      src={program.video_url}
+                      autoPlay
+                      muted
+                      loop
+                      playsInline
+                      className="absolute inset-0 w-full h-full object-cover"
+                      aria-label={`${program.name} campus video`}
+                    />
+                  ) : program.image_url ? (
                     <img
                       src={program.image_url}
                       alt={program.name}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                       loading="lazy"
                     />
                   ) : (
