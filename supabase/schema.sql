@@ -2,21 +2,15 @@
 -- TGPCOP 2.0 — Supabase Database Schema
 -- Run this in the Supabase SQL Editor (or via supabase CLI).
 -- Includes tables, indexes, triggers and RLS policies.
+--
+-- Ordering matters: all tables are created BEFORE any function,
+-- view or policy that references them (Postgres validates SQL
+-- function bodies and foreign keys at creation time).
 -- =============================================================
 
--- ---------- Helper: role check ----------
-create or replace function public.current_role()
-returns text
-language sql
-stable
-security definer
-set search_path = public
-as $$
-  select coalesce(
-    (select role::text from public.profiles where user_id = auth.uid()),
-    'anon'
-  )
-$$;
+-- =============================================================
+-- 1) TABLES
+-- =============================================================
 
 -- ---------- profiles ----------
 create table if not exists public.profiles (
@@ -52,20 +46,7 @@ create trigger on_auth_user_created
   after insert on auth.users
   for each row execute function public.handle_new_user();
 
--- ---------- departments ----------
-create table if not exists public.departments (
-  id uuid primary key default gen_random_uuid(),
-  name text not null,
-  code text not null unique,
-  description text,
-  head_id uuid references public.faculty(id) on delete set null,
-  is_active boolean not null default true,
-  sort_order int not null default 0,
-  created_at timestamptz not null default now(),
-  updated_at timestamptz not null default now()
-);
-
--- ---------- faculty ----------
+-- ---------- faculty (created before departments: departments references it) ----------
 create table if not exists public.faculty (
   id uuid primary key default gen_random_uuid(),
   name text not null,
@@ -84,6 +65,19 @@ create table if not exists public.faculty (
   updated_at timestamptz not null default now()
 );
 create index if not exists idx_faculty_active on public.faculty(is_active, sort_order);
+
+-- ---------- departments ----------
+create table if not exists public.departments (
+  id uuid primary key default gen_random_uuid(),
+  name text not null,
+  code text not null unique,
+  description text,
+  head_id uuid references public.faculty(id) on delete set null,
+  is_active boolean not null default true,
+  sort_order int not null default 0,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
 
 -- ---------- programs ----------
 create table if not exists public.programs (
@@ -372,7 +366,41 @@ create table if not exists public.audit_logs (
 create index if not exists idx_audit_logs_created on public.audit_logs(created_at desc);
 
 -- =============================================================
--- ROW LEVEL SECURITY
+-- 2) HELPER FUNCTIONS (after tables they reference)
+-- =============================================================
+
+-- Role check used by every RLS policy
+create or replace function public.current_role()
+returns text
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select coalesce(
+    (select role::text from public.profiles where user_id = auth.uid()),
+    'anon'
+  )
+$$;
+
+-- =============================================================
+-- 3) PUBLIC VERIFICATION VIEW (masks private data at the DB level)
+-- =============================================================
+
+create or replace view public.student_verifications as
+  select prn,
+         split_part(full_name, ' ', 1)
+           || ' ' || coalesce(upper(left(split_part(full_name, ' ', -1), 1)) || '.', '') as display_name,
+         course,
+         year,
+         verification_status
+  from public.students
+  where verification_status = 'approved';
+
+grant select on public.student_verifications to anon, authenticated;
+
+-- =============================================================
+-- 4) ROW LEVEL SECURITY
 -- =============================================================
 
 alter table public.profiles enable row level security;
@@ -407,26 +435,12 @@ create policy "profiles_insert_self" on public.profiles
   for insert with check (user_id = auth.uid() or public.current_role() = 'admin');
 
 -- ---------- students ----------
--- Public verification: only safe fields exposed via a dedicated view below.
 create policy "students_select_own_or_admin" on public.students
   for select using (user_id = auth.uid() or public.current_role() = 'admin');
 create policy "students_insert_self" on public.students
   for insert with check (user_id = auth.uid());
 create policy "students_update_own_or_admin" on public.students
   for update using (user_id = auth.uid() or public.current_role() = 'admin');
-
--- Public read-only verification view (masks private data at the DB level)
-create or replace view public.student_verifications as
-  select prn,
-         split_part(full_name, ' ', 1)
-           || ' ' || coalesce(upper(left(split_part(full_name, ' ', -1), 1)) || '.', '') as display_name,
-         course,
-         year,
-         verification_status
-  from public.students
-  where verification_status = 'approved';
-
-grant select on public.student_verifications to anon, authenticated;
 
 -- ---------- public content (read for everyone, write for admins) ----------
 create policy "faculty_public_read" on public.faculty
@@ -556,12 +570,12 @@ create policy "certificates_read_own_or_admin" on public.certificates
 create policy "certificates_admin_write" on public.certificates
   for all using (public.current_role() = 'admin') with check (public.current_role() = 'admin');
 
--- ---------- audit logs (insert via security definer / admin only) ----------
+-- ---------- audit logs ----------
 create policy "audit_logs_admin_all" on public.audit_logs
   for all using (public.current_role() = 'admin') with check (public.current_role() = 'admin');
 
 -- =============================================================
--- STORAGE BUCKETS
+-- 5) STORAGE BUCKETS
 -- =============================================================
 insert into storage.buckets (id, name, public)
 values
