@@ -32,17 +32,21 @@ export default function StudentLogin() {
     }
 
     setSubmitting(true)
-    const { error: err } = await signIn(email.trim(), password)
-    if (err) {
+    const res = await signIn(email.trim(), password)
+    if (res.error) {
       setError(
-        err.includes('Invalid login')
+        res.error.includes('Invalid login')
           ? 'Incorrect email or password. Please try again.'
           : 'Sign in failed. Please check your credentials and try again.'
       )
       setSubmitting(false)
       return
     }
-    navigate(location.state?.from || '/student', { replace: true })
+
+    const staffRoles = ['admin', 'teacher', 'lab_assistant', 'librarian', 'media_team', 'club_manager']
+    const isStaff = res.role && staffRoles.includes(res.role)
+    const destination = location.state?.from || (isStaff ? '/admin' : '/student')
+    navigate(destination, { replace: true })
   }
 
   const container = {

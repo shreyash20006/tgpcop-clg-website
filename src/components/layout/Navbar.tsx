@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { Menu, X, ChevronDown } from 'lucide-react'
+import { Menu, X, ChevronDown, ShieldCheck } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useScrollPosition } from '@/hooks/useScrollPosition'
+import { useAuth } from '@/hooks/useAuth'
 import { cn } from '@/lib/cn'
 import BrandLogo from './BrandLogo'
 
@@ -59,7 +60,11 @@ export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [openDropdown, setOpenDropdown] = useState<string | null>(null)
   const { isScrolled } = useScrollPosition()
+  const { user, role } = useAuth()
   const location = useLocation()
+
+  const staffRoles = ['admin', 'teacher', 'lab_assistant', 'librarian', 'media_team', 'club_manager']
+  const isStaff = Boolean(user && role && staffRoles.includes(role))
 
   return (
     <nav
@@ -77,81 +82,129 @@ export default function Navbar() {
 
           {/* Desktop Nav */}
           <div className="hidden xl:flex items-center gap-1">
-            {navLinks.map((item) => (
-              <div
-                key={item.label}
-                className="relative"
-                onMouseEnter={() => item.children && setOpenDropdown(item.label)}
-                onMouseLeave={() => setOpenDropdown(null)}
-              >
-                {item.path ? (
-                  <Link
-                    to={item.path}
-                    className={cn(
-                      'px-3 py-2 text-sm font-heading font-medium rounded-md transition-colors',
-                      location.pathname === item.path
-                        ? 'text-primary-500'
-                        : 'text-dark-text hover:text-primary-500 hover:bg-light-bg'
-                    )}
-                  >
-                    {item.label}
-                  </Link>
-                ) : (
-                  <button
-                    className={cn(
-                      'px-3 py-2 text-sm font-heading font-medium rounded-md transition-colors flex items-center gap-1',
-                      location.pathname.startsWith('/about') && item.label === 'About' ? 'text-primary-500' : 'text-dark-text hover:text-primary-500 hover:bg-light-bg'
-                    )}
-                    onClick={() => setOpenDropdown(openDropdown === item.label ? null : item.label)}
-                  >
-                    {item.label}
-                    <ChevronDown className={cn(
-                      'w-3.5 h-3.5 transition-transform',
-                      openDropdown === item.label && 'rotate-180'
-                    )} />
-                  </button>
-                )}
+            {navLinks.map((item) => {
+              const children = item.children ? [...item.children] : []
+              if (item.label === 'Students' && isStaff && !children.some(c => c.path === '/admin')) {
+                children.push({ label: '⚡ Admin Portal', path: '/admin' })
+                children.push({ label: '🖼️ Manage Gallery', path: '/admin/gallery' })
+              }
 
-                <AnimatePresence>
-                  {item.children && openDropdown === item.label && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 8 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: 8 }}
-                      transition={{ duration: 0.15 }}
-                      className="absolute top-full left-0 mt-1 w-52 bg-white rounded-lg shadow-lg border border-border py-1 z-50"
+              return (
+                <div
+                  key={item.label}
+                  className="relative"
+                  onMouseEnter={() => children.length > 0 && setOpenDropdown(item.label)}
+                  onMouseLeave={() => setOpenDropdown(null)}
+                >
+                  {item.path ? (
+                    <Link
+                      to={item.path}
+                      className={cn(
+                        'px-3 py-2 text-sm font-heading font-medium rounded-md transition-colors',
+                        location.pathname === item.path
+                          ? 'text-primary-500'
+                          : 'text-dark-text hover:text-primary-500 hover:bg-light-bg'
+                      )}
                     >
-                      {item.children.map((child) => (
-                        <Link
-                          key={child.path}
-                          to={child.path}
-                          className="block px-4 py-2.5 text-sm text-dark-text hover:bg-light-bg hover:text-primary-500 transition-colors font-body"
-                          onClick={() => setOpenDropdown(null)}
-                        >
-                          {child.label}
-                        </Link>
-                      ))}
-                    </motion.div>
+                      {item.label}
+                    </Link>
+                  ) : (
+                    <button
+                      className={cn(
+                        'px-3 py-2 text-sm font-heading font-medium rounded-md transition-colors flex items-center gap-1',
+                        location.pathname.startsWith('/about') && item.label === 'About' ? 'text-primary-500' : 'text-dark-text hover:text-primary-500 hover:bg-light-bg'
+                      )}
+                      onClick={() => setOpenDropdown(openDropdown === item.label ? null : item.label)}
+                    >
+                      {item.label}
+                      <ChevronDown className={cn(
+                        'w-3.5 h-3.5 transition-transform',
+                        openDropdown === item.label && 'rotate-180'
+                      )} />
+                    </button>
                   )}
-                </AnimatePresence>
-              </div>
-            ))}
+
+                  <AnimatePresence>
+                    {children.length > 0 && openDropdown === item.label && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 8 }}
+                        transition={{ duration: 0.15 }}
+                        className="absolute top-full left-0 mt-1 w-56 bg-white rounded-lg shadow-lg border border-border py-1 z-50"
+                      >
+                        {children.map((child) => (
+                          <Link
+                            key={child.path}
+                            to={child.path}
+                            className={cn(
+                              'block px-4 py-2.5 text-sm transition-colors font-body',
+                              child.path.startsWith('/admin')
+                                ? 'text-primary-600 font-semibold bg-primary-50/50 hover:bg-primary-50'
+                                : 'text-dark-text hover:bg-light-bg hover:text-primary-500'
+                            )}
+                            onClick={() => setOpenDropdown(null)}
+                          >
+                            {child.label}
+                          </Link>
+                        ))}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              )
+            })}
           </div>
 
           {/* Desktop CTA */}
           <div className="hidden xl:flex items-center gap-3">
-            <Link
-              to="/student"
-              className="px-4 py-2 text-sm font-heading font-medium text-primary-500 border border-primary-500 rounded-md hover:bg-primary-500 hover:text-white transition-colors"
-            >
-              Student Portal
-            </Link>
-            <Link
-              to="/admissions"
-              className="px-4 py-2 text-sm font-heading font-semibold text-white bg-accent-500 rounded-md hover:bg-accent-600 transition-colors"
-            >
-              Apply Now
-            </Link>
+            {isStaff ? (
+              <>
+                <Link
+                  to="/admin"
+                  className="px-3.5 py-2 text-sm font-heading font-semibold text-white bg-primary-600 rounded-md hover:bg-primary-700 transition-colors flex items-center gap-1.5 shadow-sm"
+                >
+                  <ShieldCheck className="w-4 h-4 text-cyan-300" />
+                  Admin Portal
+                </Link>
+                <Link
+                  to="/student"
+                  className="px-3.5 py-2 text-sm font-heading font-medium text-primary-500 border border-primary-500 rounded-md hover:bg-primary-500 hover:text-white transition-colors"
+                >
+                  Student Portal
+                </Link>
+              </>
+            ) : user ? (
+              <>
+                <Link
+                  to="/student"
+                  className="px-4 py-2 text-sm font-heading font-medium text-primary-500 border border-primary-500 rounded-md hover:bg-primary-500 hover:text-white transition-colors"
+                >
+                  Student Portal
+                </Link>
+                <Link
+                  to="/admissions"
+                  className="px-4 py-2 text-sm font-heading font-semibold text-white bg-accent-500 rounded-md hover:bg-accent-600 transition-colors"
+                >
+                  Apply Now
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link
+                  to="/login"
+                  className="px-4 py-2 text-sm font-heading font-medium text-primary-500 border border-primary-500 rounded-md hover:bg-primary-500 hover:text-white transition-colors"
+                >
+                  Portal Login
+                </Link>
+                <Link
+                  to="/admissions"
+                  className="px-4 py-2 text-sm font-heading font-semibold text-white bg-accent-500 rounded-md hover:bg-accent-600 transition-colors"
+                >
+                  Apply Now
+                </Link>
+              </>
+            )}
           </div>
 
           {/* Mobile Hamburger */}
@@ -190,6 +243,21 @@ export default function Navbar() {
                 </button>
               </div>
               <div className="p-4 space-y-1">
+                {isStaff && (
+                  <div className="mb-3 p-2.5 rounded-lg bg-primary-50 border border-primary-200">
+                    <p className="text-xs font-heading font-semibold text-primary-700 flex items-center gap-1.5">
+                      <ShieldCheck className="w-3.5 h-3.5" /> Staff Account ({role})
+                    </p>
+                    <Link
+                      to="/admin"
+                      className="mt-2 block w-full text-center py-2 bg-primary-600 text-white rounded-md text-xs font-heading font-semibold"
+                      onClick={() => setMobileOpen(false)}
+                    >
+                      Open Admin Portal →
+                    </Link>
+                  </div>
+                )}
+
                 {navLinks.map((item) => (
                   <div key={item.label}>
                     {item.path ? (
@@ -246,20 +314,59 @@ export default function Navbar() {
                 ))}
               </div>
               <div className="p-4 border-t border-border space-y-3">
-                <Link
-                  to="/student"
-                  className="block w-full text-center px-4 py-3 text-sm font-heading font-medium text-primary-500 border border-primary-500 rounded-lg hover:bg-primary-500 hover:text-white transition-colors"
-                  onClick={() => setMobileOpen(false)}
-                >
-                  Student Portal
-                </Link>
-                <Link
-                  to="/admissions"
-                  className="block w-full text-center px-4 py-3 text-sm font-heading font-medium text-white bg-primary-500 rounded-lg hover:bg-primary-600 transition-colors"
-                  onClick={() => setMobileOpen(false)}
-                >
-                  Apply Now
-                </Link>
+                {isStaff ? (
+                  <>
+                    <Link
+                      to="/admin"
+                      className="flex items-center justify-center gap-2 w-full text-center px-4 py-3 text-sm font-heading font-semibold text-white bg-primary-600 rounded-lg hover:bg-primary-700 transition-colors"
+                      onClick={() => setMobileOpen(false)}
+                    >
+                      <ShieldCheck className="w-4 h-4 text-cyan-300" />
+                      Admin Portal
+                    </Link>
+                    <Link
+                      to="/student"
+                      className="block w-full text-center px-4 py-3 text-sm font-heading font-medium text-primary-500 border border-primary-500 rounded-lg hover:bg-primary-500 hover:text-white transition-colors"
+                      onClick={() => setMobileOpen(false)}
+                    >
+                      Student Portal
+                    </Link>
+                  </>
+                ) : user ? (
+                  <>
+                    <Link
+                      to="/student"
+                      className="block w-full text-center px-4 py-3 text-sm font-heading font-medium text-primary-500 border border-primary-500 rounded-lg hover:bg-primary-500 hover:text-white transition-colors"
+                      onClick={() => setMobileOpen(false)}
+                    >
+                      Student Dashboard
+                    </Link>
+                    <Link
+                      to="/admissions"
+                      className="block w-full text-center px-4 py-3 text-sm font-heading font-medium text-white bg-primary-500 rounded-lg hover:bg-primary-600 transition-colors"
+                      onClick={() => setMobileOpen(false)}
+                    >
+                      Apply Now
+                    </Link>
+                  </>
+                ) : (
+                  <>
+                    <Link
+                      to="/login"
+                      className="block w-full text-center px-4 py-3 text-sm font-heading font-medium text-primary-500 border border-primary-500 rounded-lg hover:bg-primary-500 hover:text-white transition-colors"
+                      onClick={() => setMobileOpen(false)}
+                    >
+                      Portal Login
+                    </Link>
+                    <Link
+                      to="/admissions"
+                      className="block w-full text-center px-4 py-3 text-sm font-heading font-medium text-white bg-primary-500 rounded-lg hover:bg-primary-600 transition-colors"
+                      onClick={() => setMobileOpen(false)}
+                    >
+                      Apply Now
+                    </Link>
+                  </>
+                )}
               </div>
             </motion.div>
           </>

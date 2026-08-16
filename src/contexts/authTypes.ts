@@ -8,7 +8,7 @@ export interface AuthContextType {
   role: UserRole | null
   loading: boolean
   signUp: (email: string, password: string, fullName: string) => Promise<{ error: string | null }>
-  signIn: (email: string, password: string) => Promise<{ error: string | null }>
+  signIn: (email: string, password: string) => Promise<{ error: string | null; role?: UserRole | null }>
   signOut: () => Promise<void>
   resetPassword: (email: string) => Promise<{ error: string | null }>
 }

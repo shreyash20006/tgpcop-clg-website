@@ -23,8 +23,8 @@ export default function ProtectedRoute({ children, allowedRoles }: ProtectedRout
     return <Navigate to="/login" replace state={{ from: window.location.pathname }} />
   }
 
-  if (allowedRoles && role && !allowedRoles.includes(role)) {
-    return <Navigate to="/" replace />
+  if (allowedRoles && (!role || !allowedRoles.includes(role))) {
+    return <Navigate to={role === 'student' ? '/student' : '/'} replace />
   }
 
   return <>{children}</>

@@ -57,7 +57,7 @@ const AdminPrograms = lazy(() => import('@/pages/admin/Programs'))
 const AdminEnquiries = lazy(() => import('@/pages/admin/Enquiries'))
 const AdminSettings = lazy(() => import('@/pages/admin/Settings'))
 
-const STAFF_ROLES = ['admin', 'teacher', 'lab_assistant', 'librarian', 'media_team'] as const
+const STAFF_ROLES = ['admin', 'teacher', 'lab_assistant', 'librarian', 'media_team', 'club_manager'] as const
 
 function PageFallback() {
   return (

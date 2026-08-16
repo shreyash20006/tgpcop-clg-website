@@ -1,7 +1,12 @@
-import { Phone, MapPin } from 'lucide-react'
+import { Phone, MapPin, ShieldCheck, User } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import { useAuth } from '@/hooks/useAuth'
 
 export default function TopBar() {
+  const { user, role } = useAuth()
+  const staffRoles = ['admin', 'teacher', 'lab_assistant', 'librarian', 'media_team', 'club_manager']
+  const isStaff = Boolean(user && role && staffRoles.includes(role))
+
   return (
     <div className="bg-navy-900 text-white/80 text-sm hidden md:block">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-9">
@@ -17,9 +22,26 @@ export default function TopBar() {
         </div>
         <div className="flex items-center gap-4">
           <span className="text-white/60">DTE Code: <span className="text-cyan-400 font-medium">4673</span></span>
+          <span className="text-white/20">|</span>
           <Link to="/student-verification" className="text-cyan-400 hover:text-cyan-300 transition-colors font-medium">
             Verify Student
           </Link>
+          <span className="text-white/20">|</span>
+          {isStaff ? (
+            <Link to="/admin" className="text-amber-300 hover:text-amber-200 transition-colors font-medium flex items-center gap-1">
+              <ShieldCheck className="w-3.5 h-3.5" />
+              <span>Admin Portal</span>
+            </Link>
+          ) : user ? (
+            <Link to="/student" className="text-cyan-400 hover:text-cyan-300 transition-colors font-medium flex items-center gap-1">
+              <User className="w-3.5 h-3.5" />
+              <span>Student Portal</span>
+            </Link>
+          ) : (
+            <Link to="/login" className="text-white/70 hover:text-white transition-colors">
+              Portal Login
+            </Link>
+          )}
         </div>
       </div>
     </div>

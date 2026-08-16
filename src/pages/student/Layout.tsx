@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { NavLink, Outlet, useNavigate } from 'react-router-dom'
+import { NavLink, Outlet, useNavigate, Link } from 'react-router-dom'
 import {
   LayoutDashboard,
   UserCircle,
@@ -11,6 +11,7 @@ import {
   Menu,
   X,
   GraduationCap,
+  ShieldCheck,
 } from 'lucide-react'
 import { useAuth } from '@/hooks/useAuth'
 import { cn } from '@/lib/cn'
@@ -25,9 +26,12 @@ const navItems = [
 ]
 
 export default function StudentLayout() {
-  const { user, signOut } = useAuth()
+  const { user, role, signOut } = useAuth()
   const navigate = useNavigate()
   const [sidebarOpen, setSidebarOpen] = useState(false)
+
+  const staffRoles = ['admin', 'teacher', 'lab_assistant', 'librarian', 'media_team', 'club_manager']
+  const isStaff = Boolean(role && staffRoles.includes(role))
 
   async function handleSignOut() {
     await signOut()
@@ -45,6 +49,24 @@ export default function StudentLayout() {
           <div className="text-white/50 text-xs">TGPCOP</div>
         </div>
       </div>
+
+      {isStaff && (
+        <div className="mx-3 mt-3 p-3 rounded-xl bg-gradient-to-br from-primary-900/60 to-primary-950 border border-primary-500/30">
+          <div className="flex items-center gap-1.5 text-cyan-300 text-xs font-heading font-semibold">
+            <ShieldCheck className="w-4 h-4 text-cyan-400 shrink-0" />
+            <span>Staff Account ({role})</span>
+          </div>
+          <p className="text-white/60 text-[11px] mt-1 mb-2.5 leading-snug">
+            You have staff privileges to upload gallery photos, post notices & manage events.
+          </p>
+          <Link
+            to="/admin"
+            className="flex items-center justify-center gap-1.5 w-full py-2 bg-primary-500 hover:bg-primary-600 text-white rounded-lg text-xs font-heading font-semibold transition-colors shadow-sm"
+          >
+            Open Admin Portal →
+          </Link>
+        </div>
+      )}
 
       <nav className="flex-1 p-3 space-y-1" aria-label="Student navigation">
         {navItems.map((item) => (
@@ -127,6 +149,20 @@ export default function StudentLayout() {
 
       {/* Content */}
       <main className="lg:pl-64">
+        {isStaff && (
+          <div className="bg-primary-50 border-b border-primary-200 px-4 sm:px-6 py-2.5 flex items-center justify-between flex-wrap gap-2 text-xs">
+            <div className="flex items-center gap-2 text-primary-900 font-medium">
+              <ShieldCheck className="w-4 h-4 text-primary-600" />
+              <span>You are signed in with staff privileges ({role}).</span>
+            </div>
+            <Link
+              to="/admin"
+              className="font-heading font-semibold text-primary-700 hover:text-primary-800 underline underline-offset-2 flex items-center gap-1"
+            >
+              Open Admin Portal & Manage Gallery →
+            </Link>
+          </div>
+        )}
         <div className="p-4 sm:p-6 lg:p-8 max-w-6xl">
           <Outlet />
         </div>

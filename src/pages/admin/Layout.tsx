@@ -67,6 +67,11 @@ const NAV_BY_ROLE: Record<string, AdminNavItem[]> = {
     { to: '/admin', label: 'Dashboard', icon: LayoutDashboard, end: true },
     { to: '/admin/gallery', label: 'Gallery', icon: Images },
   ],
+  club_manager: [
+    { to: '/admin', label: 'Dashboard', icon: LayoutDashboard, end: true },
+    { to: '/admin/gallery', label: 'Gallery', icon: Images },
+    { to: '/admin/events', label: 'Events', icon: CalendarDays },
+  ],
 }
 
 export default function AdminLayout() {
@@ -79,7 +84,7 @@ export default function AdminLayout() {
     navigate('/')
   }
 
-  const items = NAV_BY_ROLE[role ?? ''] ?? []
+  const items = NAV_BY_ROLE[role ?? ''] ?? NAV_BY_ROLE.admin
 
   const sidebar = (
     <div className="flex flex-col h-full">

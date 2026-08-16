@@ -40,16 +40,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => subscription.unsubscribe()
   }, [])
 
-  async function fetchRole(userId: string) {
+  async function fetchRole(userId: string): Promise<UserRole | null> {
     try {
-      const { data } = await supabase!
+      const { data, error } = await supabase!
         .from('profiles')
         .select('role')
         .eq('user_id', userId)
-        .single()
-      setRole((data?.role as UserRole) ?? null)
+        .maybeSingle()
+
+      if (error || !data) {
+        setRole('student')
+        return 'student'
+      }
+      const r = (data.role as UserRole) ?? 'student'
+      setRole(r)
+      return r
     } catch {
       setRole(null)
+      return null
     } finally {
       setLoading(false)
     }
@@ -67,8 +75,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   async function signIn(email: string, password: string) {
     if (!supabase) return { error: 'Supabase is not configured' }
-    const { error } = await supabase.auth.signInWithPassword({ email, password })
-    return { error: error?.message ?? null }
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+    if (error) return { error: error.message }
+
+    let fetchedRole: UserRole | null = null
+    if (data?.user) {
+      setUser(data.user)
+      setSession(data.session)
+      fetchedRole = await fetchRole(data.user.id)
+    }
+    return { error: null, role: fetchedRole }
   }
 
   async function signOut() {
