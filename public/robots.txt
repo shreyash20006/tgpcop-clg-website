@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /student
+Disallow: /login
+Disallow: /register
+Disallow: /forgot-password
+
+Sitemap: https://www.tgpcop.com/sitemap.xml
