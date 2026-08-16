@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { MapPin, Phone, Mail } from 'lucide-react'
+import BrandLogo from './BrandLogo'
 
 const quickLinks = [
   { label: 'Home', path: '/' },
@@ -34,9 +35,7 @@ export default function Footer() {
           {/* College Info */}
           <div className="lg:col-span-2">
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center">
-                <span className="text-navy-900 font-heading font-bold text-lg">T</span>
-              </div>
+              <BrandLogo variant="light" />
               <div>
                 <div className="font-heading font-bold text-lg">TGPCOP</div>
                 <div className="text-white/60 text-xs">Nagpur</div>

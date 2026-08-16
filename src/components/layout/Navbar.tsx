@@ -4,6 +4,7 @@ import { Menu, X, ChevronDown } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useScrollPosition } from '@/hooks/useScrollPosition'
 import { cn } from '@/lib/cn'
+import BrandLogo from './BrandLogo'
 
 const navLinks = [
   { label: 'Home', path: '/' },
@@ -71,9 +72,7 @@ export default function Navbar() {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3 shrink-0">
-            <div className="w-10 h-10 bg-navy-900 rounded-lg flex items-center justify-center">
-              <span className="text-white font-heading font-bold text-lg">T</span>
-            </div>
+            <BrandLogo variant="dark" />
             <div className="hidden sm:block">
               <div className="font-heading font-bold text-navy-900 text-sm leading-tight">TGPCOP</div>
               <div className="text-muted text-xs leading-tight">Nagpur</div>
@@ -81,7 +80,7 @@ export default function Navbar() {
           </Link>
 
           {/* Desktop Nav */}
-          <div className="hidden lg:flex items-center gap-1">
+          <div className="hidden xl:flex items-center gap-1">
             {navLinks.map((item) => (
               <div
                 key={item.label}
@@ -144,7 +143,7 @@ export default function Navbar() {
           </div>
 
           {/* Desktop CTA */}
-          <div className="hidden lg:flex items-center gap-3">
+          <div className="hidden xl:flex items-center gap-3">
             <Link
               to="/student"
               className="px-4 py-2 text-sm font-heading font-medium text-primary-500 border border-primary-500 rounded-md hover:bg-primary-500 hover:text-white transition-colors"
@@ -153,7 +152,7 @@ export default function Navbar() {
             </Link>
             <Link
               to="/admissions"
-              className="px-4 py-2 text-sm font-heading font-medium text-white bg-primary-500 rounded-md hover:bg-primary-600 transition-colors"
+              className="px-4 py-2 text-sm font-heading font-semibold text-white bg-accent-500 rounded-md hover:bg-accent-600 transition-colors"
             >
               Apply Now
             </Link>
@@ -161,7 +160,7 @@ export default function Navbar() {
 
           {/* Mobile Hamburger */}
           <button
-            className="lg:hidden p-2 rounded-md hover:bg-light-bg transition-colors"
+            className="xl:hidden p-2 rounded-md hover:bg-light-bg transition-colors"
             onClick={() => setMobileOpen(!mobileOpen)}
             aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
           >
@@ -178,7 +177,7 @@ export default function Navbar() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/40 z-40 lg:hidden"
+              className="fixed inset-0 bg-black/40 z-40 xl:hidden"
               onClick={() => setMobileOpen(false)}
             />
             <motion.div
@@ -186,7 +185,7 @@ export default function Navbar() {
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'tween', duration: 0.25 }}
-              className="fixed right-0 top-0 h-full w-72 bg-white shadow-xl z-50 lg:hidden overflow-y-auto"
+              className="fixed right-0 top-0 h-full w-72 bg-white shadow-xl z-50 xl:hidden overflow-y-auto"
             >
               <div className="p-4 border-b border-border flex items-center justify-between">
                 <div className="font-heading font-bold text-navy-900">Menu</div>

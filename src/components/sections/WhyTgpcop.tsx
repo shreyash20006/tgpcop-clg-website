@@ -37,26 +37,25 @@ const features = [
 
 export default function WhyTgpcop() {
   return (
-    <section className="py-16 md:py-24 bg-navy-900">
+    <section className="py-16 md:py-24 bg-light-bg">
       <PageContainer>
         <SectionHeading
           label="Why TGPCOP"
           heading="An institution built around student success"
           description="Everything at TGPCOP — from curriculum to campus — is designed to prepare students for meaningful careers in pharmaceutical sciences."
           align="center"
-          className="[&_h2]:text-white [&_p:last-child]:text-white/60"
         />
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {features.map((feature) => (
             <div
               key={feature.title}
-              className="bg-white/5 border border-white/10 rounded-xl p-6 hover:bg-white/10 transition-colors"
+              className="bg-white border border-border rounded-2xl p-6 hover:-translate-y-1 hover:shadow-md transition-all duration-200 group"
             >
-              <div className="w-11 h-11 rounded-lg bg-cyan-500/15 flex items-center justify-center mb-4">
-                <feature.icon className="w-5 h-5 text-cyan-400" />
+              <div className="w-11 h-11 rounded-lg bg-primary-50 flex items-center justify-center mb-4 transition-colors group-hover:bg-accent-500">
+                <feature.icon className="w-5 h-5 text-primary-500 transition-colors group-hover:text-white" />
               </div>
-              <h3 className="font-heading font-semibold text-base text-white mb-2">{feature.title}</h3>
-              <p className="text-white/60 text-sm leading-relaxed">{feature.description}</p>
+              <h3 className="font-heading font-semibold text-base text-navy-900 mb-2">{feature.title}</h3>
+              <p className="text-muted text-sm leading-relaxed">{feature.description}</p>
             </div>
           ))}
         </div>

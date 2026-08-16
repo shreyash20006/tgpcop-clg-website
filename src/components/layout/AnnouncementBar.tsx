@@ -22,12 +22,12 @@ export default function AnnouncementBar() {
 
   return (
     <div
-      className="bg-navy-950 text-white text-sm relative overflow-hidden"
+      className="bg-primary-500 text-white text-sm relative overflow-hidden"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
       <div className="flex items-center">
-        <div className="bg-cyan-500 text-navy-900 px-4 py-2 font-heading font-semibold text-xs uppercase tracking-wider shrink-0 z-10 flex items-center gap-1.5">
+        <div className="bg-accent-500 text-white px-4 py-2 font-heading font-semibold text-xs uppercase tracking-wider shrink-0 z-10 flex items-center gap-1.5">
           <Megaphone className="w-3.5 h-3.5" />
           Notice
         </div>

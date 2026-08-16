@@ -1,19 +1,23 @@
 @import "tailwindcss";
 
 @theme {
-  --color-navy-950: #060F1D;
-  --color-navy-900: #0B1F3A;
-  --color-navy-800: #122C52;
-  --color-navy-700: #1A3B6B;
-  --color-navy-600: #215084;
-  --color-primary-600: #0F4580;
-  --color-primary-500: #1455A0;
-  --color-primary-400: #1E6BC0;
-  --color-primary-300: #3D8FE0;
+  /* TGPCOP brand palette — derived from the official logo (blue / orange / green) */
+  --color-navy-950: #071A33;
+  --color-navy-900: #0B2341;
+  --color-navy-800: #10305C;
+  --color-navy-700: #164076;
+  --color-navy-600: #1D5290;
+  --color-primary-600: #12488C;
+  --color-primary-500: #1557A6;
+  --color-primary-400: #2E6FBE;
+  --color-primary-300: #5C93D4;
+  --color-accent-600: #D96E12;
+  --color-accent-500: #F58220;
+  --color-accent-400: #F8953F;
   --color-cyan-500: #00A6D6;
   --color-cyan-400: #00BCE8;
   --color-cyan-300: #4DD4F0;
-  --color-light-bg: #F6F9FC;
+  --color-light-bg: #F7F9FC;
   --color-dark-text: #172033;
   --color-muted: #64748B;
   --color-border: #E2E8F0;
