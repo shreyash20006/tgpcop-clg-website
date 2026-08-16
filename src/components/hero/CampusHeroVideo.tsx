@@ -3,7 +3,7 @@ import { useReducedMotion } from 'framer-motion'
 import { cn } from '@/lib/cn'
 
 export const CAMPUS_VIDEO_URL =
-  'https://res.cloudinary.com/dsqxboxoc/video/upload/v1786876976/add_animation_vedio_for_websit_exxxh9.mp4'
+  'https://res.cloudinary.com/dsqxboxoc/video/upload/v1786879431/video_20260816_164024_edit_eof03n.mp4'
 
 interface CampusHeroVideoProps {
   className?: string
