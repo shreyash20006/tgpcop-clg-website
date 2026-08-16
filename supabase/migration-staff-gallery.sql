@@ -209,7 +209,7 @@ create policy "gallery_photos_insert" on public.gallery_photos
       select 1 from public.gallery_albums a
       where a.id = gallery_photos.album_id
         and (public.is_admin() or a.created_by = auth.uid())
-        and a.status <> 'published'
+        and (public.is_admin() or a.status <> 'published')
     )
   );
 
@@ -220,7 +220,7 @@ create policy "gallery_photos_update" on public.gallery_photos
     or exists (
       select 1 from public.gallery_albums a
       where a.id = gallery_photos.album_id
-        and a.created_by = auth.uid() and a.status <> 'published'
+        and a.created_by = auth.uid() and (public.is_admin() or a.status <> 'published')
     )
   );
 
@@ -231,7 +231,7 @@ create policy "gallery_photos_delete" on public.gallery_photos
     or exists (
       select 1 from public.gallery_albums a
       where a.id = gallery_photos.album_id
-        and a.created_by = auth.uid() and a.status <> 'published'
+        and a.created_by = auth.uid() and (public.is_admin() or a.status <> 'published')
     )
   );
 
@@ -268,27 +268,63 @@ grant select on public.student_verifications to anon, authenticated;
 -- -------------------------------------------------------------
 -- 8) STORAGE
 -- -------------------------------------------------------------
+-- 8) STORAGE
+-- -------------------------------------------------------------
 insert into storage.buckets (id, name, public)
-values ('student-profiles', 'student-profiles', true)
-on conflict (id) do nothing;
+values
+  ('gallery', 'gallery', true),
+  ('student-profiles', 'student-profiles', true),
+  ('documents', 'documents', true),
+  ('resources', 'resources', true),
+  ('campus-images', 'campus-images', true),
+  ('event-images', 'event-images', true)
+on conflict (id) do update set public = true;
 
--- Staff can upload gallery images
+-- Public read for gallery, documents, resources, campus buckets
+drop policy if exists "public_read_gallery" on storage.objects;
+create policy "public_read_gallery" on storage.objects
+  for select using (bucket_id in ('gallery', 'documents', 'resources', 'campus-images', 'event-images'));
+
+-- Staff/Admin can upload gallery images
 drop policy if exists "staff_upload_gallery" on storage.objects;
 create policy "staff_upload_gallery" on storage.objects
   for insert to authenticated
-  with check (bucket_id = 'gallery' and public.is_staff());
+  with check (bucket_id = 'gallery' and (public.is_staff() or public.is_admin()));
 
--- Staff can delete their own gallery objects
+-- Staff/Admin can update gallery images
+drop policy if exists "staff_update_gallery" on storage.objects;
+create policy "staff_update_gallery" on storage.objects
+  for update to authenticated
+  using (bucket_id = 'gallery' and (public.is_staff() or public.is_admin()));
+
+-- Staff/Admin can delete gallery images
+drop policy if exists "staff_delete_gallery" on storage.objects;
 drop policy if exists "staff_delete_own_gallery" on storage.objects;
-create policy "staff_delete_own_gallery" on storage.objects
+create policy "staff_delete_gallery" on storage.objects
   for delete to authenticated
-  using (bucket_id = 'gallery' and owner = auth.uid());
+  using (bucket_id = 'gallery' and (public.is_admin() or owner = auth.uid()));
+
+-- Documents & Notices: Staff/Admin upload, update, delete
+drop policy if exists "staff_upload_documents" on storage.objects;
+create policy "staff_upload_documents" on storage.objects
+  for insert to authenticated
+  with check (bucket_id in ('documents', 'resources') and (public.is_staff() or public.is_admin()));
+
+drop policy if exists "staff_update_documents" on storage.objects;
+create policy "staff_update_documents" on storage.objects
+  for update to authenticated
+  using (bucket_id in ('documents', 'resources') and (public.is_staff() or public.is_admin()));
+
+drop policy if exists "staff_delete_documents" on storage.objects;
+create policy "staff_delete_documents" on storage.objects
+  for delete to authenticated
+  using (bucket_id in ('documents', 'resources') and (public.is_admin() or owner = auth.uid()));
 
 -- Program images: staff upload to campus-images
 drop policy if exists "staff_upload_campus" on storage.objects;
 create policy "staff_upload_campus" on storage.objects
   for insert to authenticated
-  with check (bucket_id = 'campus-images' and public.is_staff());
+  with check (bucket_id = 'campus-images' and (public.is_staff() or public.is_admin()));
 
 -- Student profile photos: public read, owner write
 drop policy if exists "public_read_student_profiles" on storage.objects;
@@ -309,3 +345,4 @@ drop policy if exists "owner_delete_student_profiles" on storage.objects;
 create policy "owner_delete_student_profiles" on storage.objects
   for delete to authenticated
   using (bucket_id = 'student-profiles' and (storage.foldername(name))[1] = auth.uid()::text);
+

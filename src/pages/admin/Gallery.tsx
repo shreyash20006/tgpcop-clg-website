@@ -169,22 +169,21 @@ export default function AdminGallery() {
   }
 
   async function performSave(): Promise<AlbumRow | null> {
-    if (!editing && !form.title.trim()) {
+    if (!form.title.trim()) {
       setFormError('Album title is required.')
-      return null
-    }
-    if (!editing && selected.length === 0) {
-      setFormError('Please select at least one photo for the album.')
       return null
     }
 
     setSaving(true)
+    setFormError(null)
+    setSuccessMsg(null)
     try {
       let album = editing
       if (!album) {
+        const baseSlug = slugify(form.title) || 'album'
         album = await createAlbum({
           title: form.title.trim(),
-          slug: `${slugify(form.title)}-${Date.now().toString(36)}`,
+          slug: `${baseSlug}-${Date.now().toString(36)}`,
           description: form.description.trim() || null,
           event_date: form.event_date || null,
           category: form.category,
@@ -192,12 +191,19 @@ export default function AdminGallery() {
           created_by: (await supabase!.auth.getUser()).data.user?.id ?? null,
         })
         await logAction({ action: 'gallery.album_create', entity: 'gallery_albums', entity_id: album.id })
+      } else {
+        album = await updateAlbum(album.id, {
+          title: form.title.trim(),
+          description: form.description.trim() || null,
+          event_date: form.event_date || null,
+          category: form.category,
+        })
       }
 
       if (selected.length > 0 && album) {
         setUploading(true)
         const coverIndex = coverId ? selected.findIndex((p) => p.id === coverId) : 0
-        await uploadAlbumPhotos(
+        const result = await uploadAlbumPhotos(
           album,
           selected.map((p) => p.file),
           (index, status) => {
@@ -207,19 +213,19 @@ export default function AdminGallery() {
         )
         setUploading(false)
         album = await refreshAlbum(album.id)
-        setSelected([])
-      }
-
-      if (album && (form.description.trim() || album.description)) {
-        album = await updateAlbum(album.id, {
-          description: form.description.trim() || null,
-          event_date: form.event_date || null,
-          category: form.category,
-        })
+        if (result.errors.length > 0) {
+          setFormError(`Uploaded ${result.uploadedCount} photos, but ${result.errors.length} failed: ${result.errors[0]}`)
+        } else {
+          setSelected([])
+          setCoverId(null)
+        }
       }
 
       setSuccessMsg('Album saved successfully.')
       setEditing(album)
+      if (album) {
+        setExistingPhotos(await getAlbumPhotosAdmin(album.id))
+      }
       load()
       return album
     } catch (err) {
