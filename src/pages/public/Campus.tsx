@@ -129,6 +129,63 @@ export default function Campus() {
         </div>
       </PageContainer>
 
+      {/* Library Section */}
+      <div className="bg-light-bg border-y border-border">
+        <PageContainer className="py-12 md:py-16">
+          <SectionHeading
+            label="Library"
+            heading="A knowledge hub for every learner"
+            description="The learning process is supported by a rich and voluminous library with all-time internet facility for students and staff."
+          />
+
+          {/* Photo Grid */}
+          <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-10 rounded-2xl overflow-hidden">
+            {[
+              { src: 'https://res.cloudinary.com/dsqxboxoc/image/upload/v1786901257/2_skyyrh.jpg', alt: 'Library view 1' },
+              { src: 'https://res.cloudinary.com/dsqxboxoc/image/upload/v1786901257/1_xj9qws.jpg', alt: 'Library view 2' },
+              { src: 'https://res.cloudinary.com/dsqxboxoc/image/upload/v1786901256/3_ls5kbf.jpg', alt: 'Library view 3' },
+              { src: 'https://res.cloudinary.com/dsqxboxoc/image/upload/v1786901256/4_sp342b.jpg', alt: 'Library view 4' },
+            ].map((img) => (
+              <div key={img.src} className="relative aspect-video overflow-hidden rounded-xl bg-navy-900 group">
+                <img
+                  src={img.src}
+                  alt={img.alt}
+                  loading="lazy"
+                  className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                />
+              </div>
+            ))}
+          </div>
+
+          {/* Description + Salient Features */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+            <div>
+              <h3 className="font-heading font-semibold text-lg text-navy-900 mb-3">About the Library</h3>
+              <p className="text-muted text-sm leading-relaxed">
+                Our library is supported by around <span className="font-medium text-navy-900">2,260 reference books</span>, national/international journals, periodicals and other readable articles accessible online through the internet. Library software guides students for easy issue and return of books. It is constructed with the help of many experts and immense hard work, dedicated solely to improving students with recent knowledge.
+              </p>
+            </div>
+            <div>
+              <h3 className="font-heading font-semibold text-lg text-navy-900 mb-3">Salient Features</h3>
+              <ul className="space-y-2.5 text-sm text-muted">
+                {[
+                  'Capacity of more than 100 students at a time.',
+                  'E-Library equipped with Wi-Fi for internet access on personal notebooks/laptops.',
+                  'National and international printed journals available to students free of cost for literature surveys.',
+                  'Open access for books is available.',
+                  'Pleasant atmosphere is one of its highlights.',
+                ].map((feat) => (
+                  <li key={feat} className="flex items-start gap-2.5">
+                    <span className="mt-1 shrink-0 w-4 h-4 rounded-full bg-primary-500/15 text-primary-600 flex items-center justify-center text-[10px] font-bold">→</span>
+                    <span>{feat}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </PageContainer>
+      </div>
+
       {/* General Facilities */}
       <div className="bg-light-bg border-y border-border">
         <PageContainer className="py-12 md:py-16">
