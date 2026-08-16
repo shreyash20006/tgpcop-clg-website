@@ -34,12 +34,8 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
           {/* College Info */}
           <div className="lg:col-span-2">
-            <div className="flex items-center gap-3 mb-4">
+            <div className="mb-4">
               <BrandLogo variant="light" />
-              <div>
-                <div className="font-heading font-bold text-lg">TGPCOP</div>
-                <div className="text-white/60 text-xs">Nagpur</div>
-              </div>
             </div>
             <p className="text-white/70 text-sm leading-relaxed mb-4 max-w-md">
               Tulsiramji Gaikwad-Patil College of Pharmacy, affiliated to Dr. Babasaheb Ambedkar Technological University, Lonere, and approved by Pharmacy Council of India & DTE Maharashtra.

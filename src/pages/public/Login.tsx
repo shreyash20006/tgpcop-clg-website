@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { GraduationCap, Eye, EyeOff } from 'lucide-react'
+import { Eye, EyeOff } from 'lucide-react'
+import BrandLogo from '@/components/layout/BrandLogo'
 import Button from '@/components/ui/Button'
 import { useAuth } from '@/hooks/useAuth'
 import { useSeo } from '@/lib/seo'
@@ -46,8 +47,8 @@ export default function Login() {
     <div className="min-h-[70vh] flex items-center justify-center py-12 px-4 bg-light-bg">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <div className="w-14 h-14 rounded-xl bg-navy-900 flex items-center justify-center mx-auto mb-4">
-            <GraduationCap className="w-7 h-7 text-cyan-400" />
+          <div className="inline-flex bg-white rounded-xl px-3 py-2 shadow-sm mx-auto mb-4">
+            <BrandLogo variant="dark" className="h-12" />
           </div>
           <h1 className="font-heading font-bold text-2xl text-navy-900">Welcome back</h1>
           <p className="text-muted text-sm mt-1">Sign in to the TGPCOP student portal</p>

@@ -70,13 +70,9 @@ export default function Navbar() {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between">
-          {/* Logo */}
-          <Link to="/" className="flex items-center gap-3 shrink-0">
+          {/* Logo — official lockup includes the college name */}
+          <Link to="/" className="flex items-center shrink-0" aria-label="TGPCOP — Home">
             <BrandLogo variant="dark" />
-            <div className="hidden sm:block">
-              <div className="font-heading font-bold text-navy-900 text-sm leading-tight">TGPCOP</div>
-              <div className="text-muted text-xs leading-tight">Nagpur</div>
-            </div>
           </Link>
 
           {/* Desktop Nav */}
