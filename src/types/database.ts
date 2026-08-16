@@ -1,36 +1,164 @@
-export type UserRole = 'admin' | 'faculty' | 'student' | 'club_manager'
+export type UserRole =
+  | 'admin'
+  | 'teacher'
+  | 'lab_assistant'
+  | 'librarian'
+  | 'media_team'
+  | 'student'
+  | 'club_manager'
+
+export type StaffRole = Extract<UserRole, 'admin' | 'teacher' | 'lab_assistant' | 'librarian' | 'media_team'>
+
+export const STAFF_ROLES: StaffRole[] = ['admin', 'teacher', 'lab_assistant', 'librarian', 'media_team']
 
 interface TableDefinitions {
   profiles: {
-        Row: {
-          id: string
-          user_id: string
-          full_name: string | null
-          avatar_url: string | null
-          role: UserRole
-          phone: string | null
-          created_at: string
-          updated_at: string
-        }
-        Insert: {
-          id?: string
-          user_id: string
-          full_name?: string | null
-          avatar_url?: string | null
-          role?: UserRole
-          phone?: string | null
-        }
-        Update: {
-          id?: string
-          user_id?: string
-          full_name?: string | null
-          avatar_url?: string | null
-          role?: UserRole
-          phone?: string | null
-          updated_at?: string
-        }
-      }
-      students: {
+    Row: {
+      id: string
+      user_id: string
+      full_name: string | null
+      email: string | null
+      avatar_url: string | null
+      role: UserRole
+      department: string | null
+      designation: string | null
+      phone: string | null
+      status: 'active' | 'invited' | 'suspended'
+      created_at: string
+      updated_at: string
+    }
+    Insert: {
+      id?: string
+      user_id: string
+      full_name?: string | null
+      email?: string | null
+      avatar_url?: string | null
+      role?: UserRole
+      department?: string | null
+      designation?: string | null
+      phone?: string | null
+      status?: 'active' | 'invited' | 'suspended'
+    }
+    Update: {
+      full_name?: string | null
+      email?: string | null
+      avatar_url?: string | null
+      role?: UserRole
+      department?: string | null
+      designation?: string | null
+      phone?: string | null
+      status?: 'active' | 'invited' | 'suspended'
+      updated_at?: string
+    }
+  }
+  staff_invitations: {
+    Row: {
+      id: string
+      full_name: string
+      email: string
+      role: StaffRole
+      department: string | null
+      designation: string | null
+      phone: string | null
+      photo_url: string | null
+      status: 'pending' | 'activated' | 'revoked'
+      invited_by: string | null
+      created_at: string
+      updated_at: string
+    }
+    Insert: {
+      id?: string
+      full_name: string
+      email: string
+      role: StaffRole
+      department?: string | null
+      designation?: string | null
+      phone?: string | null
+      photo_url?: string | null
+      status?: 'pending' | 'activated' | 'revoked'
+      invited_by?: string | null
+    }
+    Update: {
+      full_name?: string
+      department?: string | null
+      designation?: string | null
+      phone?: string | null
+      role?: StaffRole
+      status?: 'pending' | 'activated' | 'revoked'
+      updated_at?: string
+    }
+  }
+  gallery_albums: {
+    Row: {
+      id: string
+      title: string
+      slug: string
+      description: string | null
+      event_date: string | null
+      category: string
+      cover_image_url: string | null
+      photo_count: number
+      status: 'draft' | 'pending_approval' | 'published' | 'archived'
+      visibility: 'public' | 'private'
+      created_by: string | null
+      created_at: string
+      updated_at: string
+    }
+    Insert: {
+      id?: string
+      title: string
+      slug: string
+      description?: string | null
+      event_date?: string | null
+      category?: string
+      cover_image_url?: string | null
+      photo_count?: number
+      status?: 'draft' | 'pending_approval' | 'published' | 'archived'
+      visibility?: 'public' | 'private'
+      created_by?: string | null
+    }
+    Update: {
+      title?: string
+      slug?: string
+      description?: string | null
+      event_date?: string | null
+      category?: string
+      cover_image_url?: string | null
+      photo_count?: number
+      status?: 'draft' | 'pending_approval' | 'published' | 'archived'
+      visibility?: 'public' | 'private'
+      updated_at?: string
+    }
+  }
+  gallery_photos: {
+    Row: {
+      id: string
+      album_id: string
+      image_url: string
+      storage_path: string
+      caption: string | null
+      alt_text: string | null
+      sort_order: number
+      uploaded_by: string | null
+      created_at: string
+    }
+    Insert: {
+      id?: string
+      album_id: string
+      image_url: string
+      storage_path: string
+      caption?: string | null
+      alt_text?: string | null
+      sort_order?: number
+      uploaded_by?: string | null
+    }
+    Update: {
+      caption?: string | null
+      alt_text?: string | null
+      sort_order?: number
+    }
+  }
+  students: {
         Row: {
           id: string
           user_id: string
@@ -62,6 +190,7 @@ interface TableDefinitions {
           verification_status?: 'pending' | 'approved' | 'rejected'
         }
         Update: {
+          user_id?: string
           full_name?: string
           phone?: string | null
           course?: 'bpharm' | 'dpharm'
@@ -157,6 +286,7 @@ interface TableDefinitions {
         Row: {
           id: string
           name: string
+          short_name: string | null
           code: string
           type: 'bpharm' | 'dpharm'
           duration: string | null
@@ -171,6 +301,7 @@ interface TableDefinitions {
         Insert: {
           id?: string
           name: string
+          short_name?: string | null
           code: string
           type: 'bpharm' | 'dpharm'
           duration?: string | null
@@ -182,6 +313,7 @@ interface TableDefinitions {
         }
         Update: {
           name?: string
+          short_name?: string | null
           code?: string
           type?: 'bpharm' | 'dpharm'
           duration?: string | null
@@ -700,7 +832,7 @@ interface TableDefinitions {
           action: string
           entity: string | null
           entity_id: string | null
-          details: string | null
+          details: Record<string, unknown> | null
           ip_address: string | null
           created_at: string
         }
@@ -710,7 +842,7 @@ interface TableDefinitions {
           action: string
           entity?: string | null
           entity_id?: string | null
-          details?: string | null
+          details?: Record<string, unknown> | null
           ip_address?: string | null
         }
         Update: {
@@ -744,6 +876,19 @@ interface TableDefinitions {
       }
 }
 
+interface ViewDefinitions {
+  student_verifications: {
+    Row: {
+      prn: string
+      display_name: string
+      course: 'bpharm' | 'dpharm'
+      year: number
+      semester: number
+      verification_status: 'pending' | 'approved' | 'rejected'
+    }
+  }
+}
+
 // Attach the Relationships key each table needs to satisfy GenericTable
 type WithRelationships<T> = {
   [K in keyof T]: T[K] & { Relationships: [] }
@@ -752,7 +897,7 @@ type WithRelationships<T> = {
 export interface Database {
   public: {
     Tables: WithRelationships<TableDefinitions>
-    Views: Record<string, never>
+    Views: WithRelationships<ViewDefinitions>
     Functions: Record<string, never>
   }
 }

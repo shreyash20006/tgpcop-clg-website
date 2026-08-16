@@ -9,18 +9,12 @@ import { getStudentByPRN } from '@/services/students'
 import { supabase } from '@/lib/supabase/client'
 
 interface VerificationResult {
-  full_name: string
-  course: string
+  prn: string
+  display_name: string
+  course: 'bpharm' | 'dpharm'
   year: number
+  semester: number
   verification_status: 'pending' | 'approved' | 'rejected'
-}
-
-function maskName(name: string) {
-  const parts = name.trim().split(/\s+/)
-  if (parts.length === 1) return parts[0]
-  const firstName = parts[0]
-  const lastInitial = parts[parts.length - 1].charAt(0).toUpperCase()
-  return `${firstName} ${lastInitial}.`
 }
 
 export default function StudentVerification() {
@@ -102,8 +96,8 @@ export default function StudentVerification() {
               </div>
               <dl className="space-y-3 text-sm">
                 <div className="flex justify-between">
-                  <dt className="text-muted">Name</dt>
-                  <dd className="font-medium text-dark-text">{maskName(result.full_name)}</dd>
+                  <dt className="text-muted">Student Name</dt>
+                  <dd className="font-medium text-dark-text">{result.display_name}</dd>
                 </div>
                 <div className="flex justify-between">
                   <dt className="text-muted">Course</dt>
@@ -112,8 +106,10 @@ export default function StudentVerification() {
                   </dd>
                 </div>
                 <div className="flex justify-between">
-                  <dt className="text-muted">Year</dt>
-                  <dd className="font-medium text-dark-text">{result.year}</dd>
+                  <dt className="text-muted">Year / Semester</dt>
+                  <dd className="font-medium text-dark-text">
+                    Year {result.year}{result.semester ? ` · Semester ${result.semester}` : ''}
+                  </dd>
                 </div>
                 <div className="flex justify-between items-center">
                   <dt className="text-muted">Status</dt>

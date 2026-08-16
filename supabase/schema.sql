@@ -393,6 +393,7 @@ create or replace view public.student_verifications as
            || ' ' || coalesce(upper(left(split_part(full_name, ' ', -1), 1)) || '.', '') as display_name,
          course,
          year,
+         semester,
          verification_status
   from public.students
   where verification_status = 'approved';

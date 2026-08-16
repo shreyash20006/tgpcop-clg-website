@@ -1,43 +1,32 @@
-import { useEffect, useState, useCallback } from 'react'
-import { Images, X, ChevronLeft, ChevronRight } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
+import { motion, useReducedMotion } from 'framer-motion'
+import { Images, Camera } from 'lucide-react'
 import PageContainer from '@/components/layout/PageContainer'
 import PageHeader from '@/components/layout/PageHeader'
 import LoadingState from '@/components/ui/LoadingState'
 import EmptyState from '@/components/ui/EmptyState'
 import ErrorState from '@/components/ui/ErrorState'
+import Badge from '@/components/ui/Badge'
+import Pagination from '@/components/ui/Pagination'
 import { useSeo } from '@/lib/seo'
-import { getGalleryImages, type GalleryCategory } from '@/services/gallery'
+import { getPublishedAlbums, ALBUM_CATEGORIES, type AlbumRow } from '@/services/galleryAlbums'
 import { supabase } from '@/lib/supabase/client'
-import { cn } from '@/lib/cn'
 
-interface GalleryImage {
-  id: string
-  title: string | null
-  description: string | null
-  image_url: string
-  category: string
-}
-
-const categories = [
-  { label: 'All', value: '' },
-  { label: 'Campus', value: 'campus' },
-  { label: 'Events', value: 'events' },
-  { label: 'Academic', value: 'academic' },
-  { label: 'Sports', value: 'sports' },
-  { label: 'Activities', value: 'activities' },
-]
+const PAGE_SIZE = 12
 
 export default function Gallery() {
   useSeo({
     title: 'Gallery',
-    description: 'Photo gallery of TGPCOP Nagpur — campus, events, academics, sports and activities.',
+    description: 'Photo albums from TGPCOP Nagpur — events, academics, sports and campus life.',
   })
 
-  const [images, setImages] = useState<GalleryImage[]>([])
+  const [albums, setAlbums] = useState<AlbumRow[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
-  const [category, setCategory] = useState<'' | GalleryCategory>('')
-  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null)
+  const [page, setPage] = useState(1)
+  const [total, setTotal] = useState(0)
+  const reduceMotion = useReducedMotion()
 
   useEffect(() => {
     if (!supabase) {
@@ -46,144 +35,91 @@ export default function Gallery() {
     }
     setLoading(true)
     setError(false)
-    getGalleryImages({ category: category || undefined, pageSize: 48 })
-      .then(({ data }) => setImages(data as GalleryImage[]))
+    getPublishedAlbums(page, PAGE_SIZE)
+      .then(({ data, count }) => {
+        setAlbums(data)
+        setTotal(count)
+      })
       .catch(() => setError(true))
       .finally(() => setLoading(false))
-  }, [category])
-
-  const closeLightbox = useCallback(() => setLightboxIndex(null), [])
-  const showPrev = useCallback(
-    () => setLightboxIndex((i) => (i === null ? null : (i - 1 + images.length) % images.length)),
-    [images.length]
-  )
-  const showNext = useCallback(
-    () => setLightboxIndex((i) => (i === null ? null : (i + 1) % images.length)),
-    [images.length]
-  )
-
-  useEffect(() => {
-    if (lightboxIndex === null) return
-    const handler = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') closeLightbox()
-      if (e.key === 'ArrowLeft') showPrev()
-      if (e.key === 'ArrowRight') showNext()
-    }
-    window.addEventListener('keydown', handler)
-    document.body.style.overflow = 'hidden'
-    return () => {
-      window.removeEventListener('keydown', handler)
-      document.body.style.overflow = ''
-    }
-  }, [lightboxIndex, closeLightbox, showPrev, showNext])
+  }, [page])
 
   return (
     <>
       <PageHeader
         title="Gallery"
-        description="Moments from campus life at TGPCOP."
+        description="Moments from campus life at TGPCOP, album by album."
         breadcrumbItems={[{ label: 'Gallery' }]}
       />
 
       <PageContainer className="py-12 md:py-16">
-        <div className="flex flex-wrap gap-2 mb-8">
-          {categories.map((c) => (
-            <button
-              key={c.value}
-              onClick={() => setCategory(c.value as '' | GalleryCategory)}
-              className={cn(
-                'px-4 py-2 rounded-full text-sm font-heading font-medium transition-colors',
-                category === c.value
-                  ? 'bg-primary-500 text-white'
-                  : 'bg-white border border-border text-dark-text hover:border-primary-300'
-              )}
-            >
-              {c.label}
-            </button>
-          ))}
-        </div>
-
         {loading ? (
           <LoadingState count={6} />
         ) : error ? (
-          <ErrorState onRetry={() => setCategory(category)} />
-        ) : images.length === 0 ? (
+          <ErrorState onRetry={() => setPage(page)} />
+        ) : albums.length === 0 ? (
           <EmptyState
             icon={Images}
             title="Gallery coming soon"
-            description="Photographs of campus, events and activities will be published here."
+            description="Photo albums from college events and campus life will appear here."
           />
         ) : (
-          <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-4 [&>*]:mb-4">
-            {images.map((image, index) => (
-              <button
-                key={image.id}
-                onClick={() => setLightboxIndex(index)}
-                className="block w-full rounded-xl overflow-hidden bg-light-bg group"
-                aria-label={image.title || 'Open image'}
-              >
-                <img
-                  src={image.image_url}
-                  alt={image.title || 'Gallery image'}
-                  className="w-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  loading="lazy"
-                />
-              </button>
-            ))}
-          </div>
+          <>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {albums.map((album, i) => (
+                <motion.div
+                  key={album.id}
+                  initial={{ opacity: 0, y: reduceMotion ? 0 : 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: '-60px' }}
+                  transition={{ duration: reduceMotion ? 0 : 0.45, delay: reduceMotion ? 0 : (i % 3) * 0.08 }}
+                >
+                  <Link
+                    to={`/gallery/${album.slug}`}
+                    className="group block bg-white border border-border rounded-2xl overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all duration-200"
+                  >
+                    <div className="aspect-[4/3] bg-gradient-to-br from-navy-900 to-primary-600 overflow-hidden">
+                      {album.cover_image_url ? (
+                        <img
+                          src={album.cover_image_url}
+                          alt={album.title}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                          loading="lazy"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center">
+                          <Camera className="w-10 h-10 text-white/20" aria-hidden="true" />
+                        </div>
+                      )}
+                    </div>
+                    <div className="p-5">
+                      <Badge variant="primary" className="mb-2">
+                        {ALBUM_CATEGORIES.find((c) => c.value === album.category)?.label ?? album.category.replace(/_/g, ' ')}
+                      </Badge>
+                      <h3 className="font-heading font-semibold text-base text-navy-900 group-hover:text-primary-500 transition-colors">
+                        {album.title}
+                      </h3>
+                      <p className="text-muted text-sm mt-1.5">
+                        {album.event_date
+                          ? new Date(album.event_date).toLocaleDateString('en-IN', {
+                              day: 'numeric',
+                              month: 'long',
+                              year: 'numeric',
+                            })
+                          : ''}
+                        {album.photo_count > 0 && (
+                          <>{' · '}{album.photo_count} {album.photo_count === 1 ? 'Photo' : 'Photos'}</>
+                        )}
+                      </p>
+                    </div>
+                  </Link>
+                </motion.div>
+              ))}
+            </div>
+            <Pagination page={page} pageSize={PAGE_SIZE} total={total} onPageChange={setPage} className="mt-10" />
+          </>
         )}
       </PageContainer>
-
-      {/* Lightbox */}
-      {lightboxIndex !== null && images[lightboxIndex] && (
-        <div
-          className="fixed inset-0 z-[100] bg-navy-950/95 flex items-center justify-center p-4"
-          role="dialog"
-          aria-modal="true"
-          aria-label="Image viewer"
-          onClick={closeLightbox}
-        >
-          <button
-            onClick={closeLightbox}
-            className="absolute top-4 right-4 p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
-            aria-label="Close"
-          >
-            <X className="w-6 h-6" />
-          </button>
-          <button
-            onClick={(e) => {
-              e.stopPropagation()
-              showPrev()
-            }}
-            className="absolute left-4 p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
-            aria-label="Previous image"
-          >
-            <ChevronLeft className="w-6 h-6" />
-          </button>
-          <figure onClick={(e) => e.stopPropagation()} className="max-w-4xl max-h-[85vh]">
-            <img
-              src={images[lightboxIndex].image_url}
-              alt={images[lightboxIndex].title || 'Gallery image'}
-              className="max-h-[80vh] max-w-full object-contain rounded-lg mx-auto"
-            />
-            {images[lightboxIndex].title && (
-              <figcaption className="text-white/80 text-sm text-center mt-3">
-                {images[lightboxIndex].title}
-              </figcaption>
-            )}
-          </figure>
-          <button
-            onClick={(e) => {
-              e.stopPropagation()
-              showNext()
-            }}
-            className="absolute right-4 p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
-            aria-label="Next image"
-          >
-            <ChevronRight className="w-6 h-6" />
-          </button>
-        </div>
-      )}
     </>
   )
 }

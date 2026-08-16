@@ -17,6 +17,7 @@ interface Student {
   email: string
   course: string
   year: number
+  semester: number
   verification_status: string
   created_at: string
 }
@@ -87,7 +88,7 @@ export default function AdminStudents() {
             setSearch(v)
             setPage(1)
           }}
-          placeholder="Search by name..."
+          placeholder="Search by name, PRN, or email..."
           className="flex-1"
         />
         <select
@@ -124,7 +125,7 @@ export default function AdminStudents() {
                 <tr className="border-b border-border bg-light-bg text-left">
                   <th className="px-5 py-3 font-heading font-semibold text-xs text-muted uppercase tracking-wider">Student</th>
                   <th className="px-5 py-3 font-heading font-semibold text-xs text-muted uppercase tracking-wider">PRN</th>
-                  <th className="px-5 py-3 font-heading font-semibold text-xs text-muted uppercase tracking-wrier">Course</th>
+                  <th className="px-5 py-3 font-heading font-semibold text-xs text-muted uppercase tracking-wider">Course</th>
                   <th className="px-5 py-3 font-heading font-semibold text-xs text-muted uppercase tracking-wider">Status</th>
                   <th className="px-5 py-3 font-heading font-semibold text-xs text-muted uppercase tracking-wider text-right">Actions</th>
                 </tr>
@@ -136,12 +137,14 @@ export default function AdminStudents() {
                       <p className="font-medium text-navy-900">{student.full_name}</p>
                       <p className="text-muted text-xs">{student.email}</p>
                     </td>
-                    <td className="px-5 py-3.5 text-muted">{student.prn}</td>
+                    <td className="px-5 py-3.5 text-muted font-mono text-xs">{student.prn}</td>
                     <td className="px-5 py-3.5">
-                      <span className="text-dark-text">
+                      <span className="text-dark-text font-medium">
                         {student.course === 'bpharm' ? 'B.Pharm' : 'D.Pharm'}
                       </span>
-                      <span className="text-muted text-xs block">Year {student.year}</span>
+                      <span className="text-muted text-xs block">
+                        Year {student.year}{student.semester ? ` · Sem ${student.semester}` : ''}
+                      </span>
                     </td>
                     <td className="px-5 py-3.5">
                       <Badge

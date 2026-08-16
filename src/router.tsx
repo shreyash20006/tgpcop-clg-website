@@ -21,12 +21,14 @@ const Clubs = lazy(() => import('@/pages/public/Clubs'))
 const Research = lazy(() => import('@/pages/public/Research'))
 const Placements = lazy(() => import('@/pages/public/Placements'))
 const Gallery = lazy(() => import('@/pages/public/Gallery'))
+const AlbumDetail = lazy(() => import('@/pages/public/AlbumDetail'))
 const Contact = lazy(() => import('@/pages/public/Contact'))
 const StudentVerification = lazy(() => import('@/pages/public/StudentVerification'))
 const NotFound = lazy(() => import('@/pages/public/NotFound'))
 
 // Auth pages
 const Login = lazy(() => import('@/pages/public/Login'))
+const StudentLogin = lazy(() => import('@/pages/public/StudentLogin'))
 const Register = lazy(() => import('@/pages/public/Register'))
 const ForgotPassword = lazy(() => import('@/pages/public/ForgotPassword'))
 
@@ -44,14 +46,18 @@ const AdminLayout = lazy(() => import('@/pages/admin/Layout'))
 const AdminDashboard = lazy(() => import('@/pages/admin/Dashboard'))
 const AdminStudents = lazy(() => import('@/pages/admin/Students'))
 const AdminVerification = lazy(() => import('@/pages/admin/Verification'))
+const AdminStaff = lazy(() => import('@/pages/admin/Staff'))
 const AdminEvents = lazy(() => import('@/pages/admin/Events'))
 const AdminNews = lazy(() => import('@/pages/admin/News'))
 const AdminNotices = lazy(() => import('@/pages/admin/Notices'))
 const AdminResources = lazy(() => import('@/pages/admin/Resources'))
 const AdminFaculty = lazy(() => import('@/pages/admin/Faculty'))
 const AdminGallery = lazy(() => import('@/pages/admin/Gallery'))
+const AdminPrograms = lazy(() => import('@/pages/admin/Programs'))
 const AdminEnquiries = lazy(() => import('@/pages/admin/Enquiries'))
 const AdminSettings = lazy(() => import('@/pages/admin/Settings'))
+
+const STAFF_ROLES = ['admin', 'teacher', 'lab_assistant', 'librarian', 'media_team'] as const
 
 function PageFallback() {
   return (
@@ -83,9 +89,11 @@ export default function AppRouter() {
           <Route path="/research" element={<Research />} />
           <Route path="/placements" element={<Placements />} />
           <Route path="/gallery" element={<Gallery />} />
+          <Route path="/gallery/:slug" element={<AlbumDetail />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/student-verification" element={<StudentVerification />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/student/login" element={<StudentLogin />} />
           <Route path="/register" element={<Register />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="*" element={<NotFound />} />
@@ -108,11 +116,11 @@ export default function AppRouter() {
           <Route path="certificates" element={<StudentCertificates />} />
         </Route>
 
-        {/* Admin routes */}
+        {/* Admin / staff routes */}
         <Route
           path="/admin"
           element={
-            <ProtectedRoute allowedRoles={['admin']}>
+            <ProtectedRoute allowedRoles={[...STAFF_ROLES]}>
               <AdminLayout />
             </ProtectedRoute>
           }
@@ -120,12 +128,14 @@ export default function AppRouter() {
           <Route index element={<AdminDashboard />} />
           <Route path="students" element={<AdminStudents />} />
           <Route path="verification" element={<AdminVerification />} />
+          <Route path="staff" element={<AdminStaff />} />
           <Route path="events" element={<AdminEvents />} />
           <Route path="news" element={<AdminNews />} />
           <Route path="notices" element={<AdminNotices />} />
           <Route path="resources" element={<AdminResources />} />
           <Route path="faculty" element={<AdminFaculty />} />
           <Route path="gallery" element={<AdminGallery />} />
+          <Route path="programs" element={<AdminPrograms />} />
           <Route path="enquiries" element={<AdminEnquiries />} />
           <Route path="settings" element={<AdminSettings />} />
         </Route>

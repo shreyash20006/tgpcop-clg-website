@@ -21,7 +21,10 @@ export async function getStudents(filters?: {
   if (filters?.course) query = query.eq('course', filters.course)
   if (filters?.year) query = query.eq('year', filters.year)
   if (filters?.verification_status) query = query.eq('verification_status', filters.verification_status)
-  if (filters?.search) query = query.ilike('full_name', `%${filters.search}%`)
+  if (filters?.search?.trim()) {
+    const s = filters.search.trim()
+    query = query.or(`full_name.ilike.%${s}%,prn.ilike.%${s}%,email.ilike.%${s}%`)
+  }
 
   const from = ((filters?.page ?? 1) - 1) * (filters?.pageSize ?? 10)
   const to = from + (filters?.pageSize ?? 10) - 1
@@ -31,14 +34,34 @@ export async function getStudents(filters?: {
   return { data: (data ?? []) as StudentRow[], count: count ?? 0 }
 }
 
-export async function getStudentByUserId(userId: string): Promise<StudentRow | null> {
+export async function getStudentByUserId(userId: string, email?: string): Promise<StudentRow | null> {
   if (!supabase) return null
   const { data } = await supabase
     .from('students')
     .select('*')
     .eq('user_id', userId)
-    .single()
-  return (data as StudentRow) ?? null
+    .maybeSingle()
+
+  if (data) return data as StudentRow
+
+  // Fallback: Check if pre-uploaded student record exists by email, and auto-link user_id
+  if (email) {
+    const { data: emailRecord } = await supabase
+      .from('students')
+      .select('*')
+      .ilike('email', email)
+      .maybeSingle()
+
+    if (emailRecord) {
+      await supabase
+        .from('students')
+        .update({ user_id: userId, updated_at: new Date().toISOString() })
+        .eq('id', emailRecord.id)
+      return { ...(emailRecord as StudentRow), user_id: userId }
+    }
+  }
+
+  return null
 }
 
 export async function getStudentByPRN(prn: string) {
@@ -47,14 +70,15 @@ export async function getStudentByPRN(prn: string) {
     .from('student_verifications')
     .select('*')
     .eq('prn', prn)
-    .single()
+    .maybeSingle()
   if (error) return null
   return data as {
     prn: string
     display_name: string
     course: 'bpharm' | 'dpharm'
     year: number
-    verification_status: string
+    semester: number
+    verification_status: 'pending' | 'approved' | 'rejected'
   } | null
 }
 

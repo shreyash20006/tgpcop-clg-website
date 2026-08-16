@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { FlaskConical, Trophy, Users, Palette, Megaphone, HeartHandshake, ArrowRight } from 'lucide-react'
+import { FlaskConical, Trophy, Users, Palette, Megaphone, HeartHandshake, ArrowRight, ExternalLink } from 'lucide-react'
 import SectionHeading from '@/components/ui/SectionHeading'
 import PageContainer from '@/components/layout/PageContainer'
 
@@ -45,18 +45,30 @@ export default function StudentLifeSection() {
           </div>
 
           <div className="grid grid-cols-2 gap-4">
-            <div className="bg-gradient-to-br from-cyan-500 to-primary-500 rounded-2xl p-6 text-white col-span-2 md:col-span-1 md:row-span-2 flex flex-col justify-between min-h-[220px]">
-              <Trophy className="w-8 h-8 text-white/70" aria-hidden="true" />
-              <div>
-                <h3 className="font-heading font-semibold text-lg mb-1">Clubs & Activities</h3>
-                <p className="text-white/80 text-sm">
-                  Join a club, participate in events and build skills outside the syllabus.
-                </p>
+            {/* Student Council feature card */}
+            <a
+              href="https://www.tgpcopcouncil.online"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group col-span-2 bg-navy-900 rounded-2xl p-6 text-white flex items-center gap-5 hover:shadow-lg transition-shadow"
+            >
+              <div className="w-14 h-14 rounded-xl bg-accent-500/15 flex items-center justify-center shrink-0">
+                <Users className="w-7 h-7 text-accent-400" aria-hidden="true" />
               </div>
-            </div>
-            <div className="bg-navy-900 rounded-2xl p-6 text-white flex flex-col justify-between min-h-[100px]">
-              <Users className="w-6 h-6 text-cyan-400" aria-hidden="true" />
-              <p className="text-white/80 text-sm font-heading font-medium mt-3">Student Council</p>
+              <div className="min-w-0">
+                <h3 className="font-heading font-semibold text-lg">TGPCOP Student Council</h3>
+                <p className="text-white/60 text-sm mt-0.5">
+                  Student-led activities, events, initiatives and campus engagement.
+                </p>
+                <span className="inline-flex items-center gap-1.5 mt-3 text-sm font-heading font-semibold text-cyan-400 group-hover:text-cyan-300 transition-colors">
+                  Visit Student Council
+                  <ExternalLink className="w-4 h-4" />
+                </span>
+              </div>
+            </a>
+            <div className="bg-light-bg border border-border rounded-2xl p-6 flex flex-col justify-between min-h-[100px]">
+              <Users className="w-6 h-6 text-cyan-500" aria-hidden="true" />
+              <p className="text-muted text-sm font-heading font-medium mt-3">Student Council</p>
             </div>
             <div className="bg-light-bg border border-border rounded-2xl p-6 flex flex-col justify-between min-h-[100px]">
               <HeartHandshake className="w-6 h-6 text-primary-500" aria-hidden="true" />
