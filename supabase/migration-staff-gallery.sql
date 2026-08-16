@@ -251,7 +251,8 @@ create policy "audit_logs_insert_own" on public.audit_logs
 -- -------------------------------------------------------------
 -- 7) VERIFICATION VIEW: include semester
 -- -------------------------------------------------------------
-create or replace view public.student_verifications as
+drop view if exists public.student_verifications;
+create view public.student_verifications as
   select prn,
          split_part(full_name, ' ', 1)
            || ' ' || coalesce(upper(left(split_part(full_name, ' ', -1), 1)) || '.', '') as display_name,

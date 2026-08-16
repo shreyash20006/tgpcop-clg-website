@@ -387,7 +387,8 @@ $$;
 -- 3) PUBLIC VERIFICATION VIEW (masks private data at the DB level)
 -- =============================================================
 
-create or replace view public.student_verifications as
+drop view if exists public.student_verifications;
+create view public.student_verifications as
   select prn,
          split_part(full_name, ' ', 1)
            || ' ' || coalesce(upper(left(split_part(full_name, ' ', -1), 1)) || '.', '') as display_name,
