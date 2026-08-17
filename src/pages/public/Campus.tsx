@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import PageContainer from '@/components/layout/PageContainer'
 import PageHeader from '@/components/layout/PageHeader'
 import SectionHeading from '@/components/ui/SectionHeading'
@@ -42,6 +43,39 @@ const labs = [
   },
 ]
 
+
+const faculty: { sr: number; name: string; role: string; profileUrl?: string }[] = [
+  { sr: 1,  name: 'Dr. Awdhut D. Pimple',   role: 'Principal', profileUrl: '/faculty/dr-awdhut-pimpale' },
+  { sr: 2,  name: 'Mr. Lalit G. Pund',      role: 'Associate Professor', profileUrl: '/faculty/mr-lalit-pund' },
+  { sr: 3,  name: 'Prof. Priyanka Waghmare', role: 'HoD', profileUrl: '/faculty/prof-priyanka-waghmare' },
+  { sr: 4,  name: 'Prof. Krutika Warthi',    role: 'Assistant Professor', profileUrl: '/faculty/prof-krutika-warthi' },
+  { sr: 5,  name: 'Prof. Neha Rumale',       role: 'Lecturer', profileUrl: '/faculty/prof-neha-rumale' },
+  { sr: 6,  name: 'Prof. Pooja Patle',       role: 'Lecturer', profileUrl: '/faculty/prof-pooja-patle' },
+  { sr: 7,  name: 'Prof. Samiksha Ajankar',  role: 'Lecturer', profileUrl: '/faculty/prof-samiksha-ajankar' },
+  { sr: 8,  name: 'Prof. Vaishnavi Vaidya',  role: 'Assistant Professor', profileUrl: '/faculty/prof-vaishnavi-vaidya' },
+  { sr: 9,  name: 'Prof. Tarun V. Pavale',   role: 'Assistant Professor' },
+  { sr: 10, name: 'Prof. Akhil G. Mondhe',   role: 'Lecturer', profileUrl: '/faculty/prof-akhil-mondhe' },
+  { sr: 11, name: 'Prof. Lankesh D. Sakhare',role: 'Lecturer' },
+  { sr: 12, name: 'Prof. Ambika R. Watekar', role: 'Lecturer' },
+  { sr: 13, name: 'Prof. Atul Nagdevte',     role: 'Vising Faculty (Mathematics)' },
+  { sr: 14, name: 'Tejswini Mankar',         role: 'Assistant Professor', profileUrl: '/faculty/prof-tejaswini-mankar' },
+  { sr: 15, name: 'Ashwini Shambharkar',     role: 'Lecturer', profileUrl: '/faculty/prof-ashwini-shambharkar' },
+  { sr: 16, name: 'Shivani Sawarkar',        role: 'Lecturer', profileUrl: '/faculty/prof-shivani-sawarkar' },
+  { sr: 17, name: 'Pallavi Zode',            role: 'Assistant Professor', profileUrl: '/faculty/prof-pallavi-zode' },
+  { sr: 18, name: 'Bratati Bhattacharjee',   role: 'Assistant Professor', profileUrl: '/faculty/prof-bratati-bhattacharjee' },
+  { sr: 19, name: 'Sejal Dhage',             role: 'Assistant Professor', profileUrl: '/faculty/prof-sejal-dhage' },
+  { sr: 20, name: 'Heena Mahurkar',          role: 'Assistant Professor', profileUrl: '/faculty/prof-heena-mahurkar' },
+  { sr: 21, name: 'Shejal Baghele',          role: 'Assistant Professor', profileUrl: '/faculty/prof-shejal-baghele' },
+  { sr: 22, name: 'Mehawish Sheikh',         role: 'Lecturer', profileUrl: '/faculty/prof-mehawish-sheikh' },
+]
+
+function roleBadge(role: string) {
+  if (role === 'Principal')           return 'bg-primary-600 text-white'
+  if (role === 'HoD')                 return 'bg-emerald-600 text-white'
+  if (role === 'Associate Professor') return 'bg-indigo-500 text-white'
+  if (role === 'Assistant Professor') return 'bg-sky-500 text-white'
+  return 'bg-gray-200 text-gray-700'   // Lecturer / Visiting
+}
 
 export default function Campus() {
   useSeo({
@@ -147,6 +181,72 @@ export default function Campus() {
           </div>
         </PageContainer>
       </div>
+
+      {/* Faculty Members */}
+      <PageContainer className="py-12 md:py-16">
+        <SectionHeading
+          label="Our Team"
+          heading="Faculty Members"
+          description="Meet the dedicated educators and staff who guide students on their pharmaceutical journey."
+        />
+        <div className="overflow-x-auto rounded-2xl border border-border shadow-sm">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="bg-navy-950 text-white">
+                <th className="py-3 px-4 text-left font-heading font-semibold w-12">#</th>
+                <th className="py-3 px-4 text-left font-heading font-semibold">Name</th>
+                <th className="py-3 px-4 text-left font-heading font-semibold">Designation</th>
+                <th className="py-3 px-4 text-right font-heading font-semibold">Profile</th>
+              </tr>
+            </thead>
+            <tbody>
+              {faculty.map((f, i) => (
+                <tr
+                  key={f.sr}
+                  className={`border-t border-border transition-colors duration-150 ${
+                    i % 2 === 0 ? 'bg-white' : 'bg-light-bg'
+                  } hover:bg-primary-50`}
+                >
+                  <td className="py-3 px-4 text-muted font-mono text-xs">{f.sr}</td>
+                  <td className="py-3 px-4 font-medium text-navy-900">
+                    {f.profileUrl ? (
+                      <Link
+                        to={f.profileUrl}
+                        className="text-primary-700 hover:text-primary-800 hover:underline font-semibold"
+                      >
+                        {f.name}
+                      </Link>
+                    ) : (
+                      f.name
+                    )}
+                  </td>
+                  <td className="py-3 px-4">
+                    <span
+                      className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold ${
+                        roleBadge(f.role)
+                      }`}
+                    >
+                      {f.role}
+                    </span>
+                  </td>
+                  <td className="py-3 px-4 text-right">
+                    {f.profileUrl ? (
+                      <Link
+                        to={f.profileUrl}
+                        className="inline-flex items-center gap-1 text-xs font-semibold text-primary-600 hover:text-primary-800 hover:underline"
+                      >
+                        View Profile →
+                      </Link>
+                    ) : (
+                      <span className="text-muted text-xs">—</span>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </PageContainer>
 
     </>
   )

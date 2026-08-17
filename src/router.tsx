@@ -10,6 +10,24 @@ const About = lazy(() => import('@/pages/public/About'))
 const Academics = lazy(() => import('@/pages/public/Academics'))
 const Admissions = lazy(() => import('@/pages/public/Admissions'))
 const Faculty = lazy(() => import('@/pages/public/Faculty'))
+const FacultyDetail = lazy(() => import('@/pages/public/FacultyDetail'))
+const FacultyDetailLalitPund = lazy(() => import('@/pages/public/FacultyDetailLalitPund'))
+const FacultyDetailPriyankaWaghmare = lazy(() => import('@/pages/public/FacultyDetailPriyankaWaghmare'))
+const FacultyDetailKrutikaWarthi = lazy(() => import('@/pages/public/FacultyDetailKrutikaWarthi'))
+const FacultyDetailNehaRumale = lazy(() => import('@/pages/public/FacultyDetailNehaRumale'))
+const FacultyDetailPoojaPatle = lazy(() => import('@/pages/public/FacultyDetailPoojaPatle'))
+const FacultyDetailSamikshaAjankar = lazy(() => import('@/pages/public/FacultyDetailSamikshaAjankar'))
+const FacultyDetailVaishnaviVaidya = lazy(() => import('@/pages/public/FacultyDetailVaishnaviVaidya'))
+const FacultyDetailAkhilMondhe = lazy(() => import('@/pages/public/FacultyDetailAkhilMondhe'))
+const FacultyDetailTejaswiniMankar = lazy(() => import('@/pages/public/FacultyDetailTejaswiniMankar'))
+const FacultyDetailAshwiniShambharkar = lazy(() => import('@/pages/public/FacultyDetailAshwiniShambharkar'))
+const FacultyDetailShivaniSawarkar = lazy(() => import('@/pages/public/FacultyDetailShivaniSawarkar'))
+const FacultyDetailPallaviZode = lazy(() => import('@/pages/public/FacultyDetailPallaviZode'))
+const FacultyDetailBratatiBhattacharjee = lazy(() => import('@/pages/public/FacultyDetailBratatiBhattacharjee'))
+const FacultyDetailSejalDhage = lazy(() => import('@/pages/public/FacultyDetailSejalDhage'))
+const FacultyDetailHeenaMahurkar = lazy(() => import('@/pages/public/FacultyDetailHeenaMahurkar'))
+const FacultyDetailShejalBaghele = lazy(() => import('@/pages/public/FacultyDetailShejalBaghele'))
+const FacultyDetailMehawishSheikh = lazy(() => import('@/pages/public/FacultyDetailMehawishSheikh'))
 const Campus = lazy(() => import('@/pages/public/Campus'))
 const Events = lazy(() => import('@/pages/public/Events'))
 const EventDetail = lazy(() => import('@/pages/public/EventDetail'))
@@ -78,6 +96,24 @@ export default function AppRouter() {
           <Route path="/academics" element={<Academics />} />
           <Route path="/admissions" element={<Admissions />} />
           <Route path="/faculty" element={<Faculty />} />
+          <Route path="/faculty/dr-awdhut-pimpale" element={<FacultyDetail />} />
+          <Route path="/faculty/mr-lalit-pund" element={<FacultyDetailLalitPund />} />
+          <Route path="/faculty/prof-priyanka-waghmare" element={<FacultyDetailPriyankaWaghmare />} />
+          <Route path="/faculty/prof-krutika-warthi" element={<FacultyDetailKrutikaWarthi />} />
+          <Route path="/faculty/prof-neha-rumale" element={<FacultyDetailNehaRumale />} />
+          <Route path="/faculty/prof-pooja-patle" element={<FacultyDetailPoojaPatle />} />
+          <Route path="/faculty/prof-samiksha-ajankar" element={<FacultyDetailSamikshaAjankar />} />
+          <Route path="/faculty/prof-vaishnavi-vaidya" element={<FacultyDetailVaishnaviVaidya />} />
+          <Route path="/faculty/prof-akhil-mondhe" element={<FacultyDetailAkhilMondhe />} />
+          <Route path="/faculty/prof-tejaswini-mankar" element={<FacultyDetailTejaswiniMankar />} />
+          <Route path="/faculty/prof-ashwini-shambharkar" element={<FacultyDetailAshwiniShambharkar />} />
+          <Route path="/faculty/prof-shivani-sawarkar" element={<FacultyDetailShivaniSawarkar />} />
+          <Route path="/faculty/prof-pallavi-zode" element={<FacultyDetailPallaviZode />} />
+          <Route path="/faculty/prof-bratati-bhattacharjee" element={<FacultyDetailBratatiBhattacharjee />} />
+          <Route path="/faculty/prof-sejal-dhage" element={<FacultyDetailSejalDhage />} />
+          <Route path="/faculty/prof-heena-mahurkar" element={<FacultyDetailHeenaMahurkar />} />
+          <Route path="/faculty/prof-shejal-baghele" element={<FacultyDetailShejalBaghele />} />
+          <Route path="/faculty/prof-mehawish-sheikh" element={<FacultyDetailMehawishSheikh />} />
           <Route path="/campus" element={<Campus />} />
           <Route path="/events" element={<Events />} />
           <Route path="/events/:slug" element={<EventDetail />} />
