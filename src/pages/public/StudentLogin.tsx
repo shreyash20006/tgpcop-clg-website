@@ -4,7 +4,6 @@ import { motion, useReducedMotion } from 'framer-motion'
 import { Eye, EyeOff, ArrowRight, ShieldCheck, BookOpen, CalendarDays } from 'lucide-react'
 import Button from '@/components/ui/Button'
 import BrandLogo from '@/components/layout/BrandLogo'
-import SocialAuthButtons from '@/components/auth/SocialAuthButtons'
 import { useAuth } from '@/hooks/useAuth'
 import { useSeo } from '@/lib/seo'
 
@@ -191,10 +190,6 @@ export default function StudentLogin() {
                 </Button>
               </motion.div>
             </form>
-
-            <motion.div variants={item}>
-              <SocialAuthButtons onError={(err) => setError(err)} />
-            </motion.div>
 
             <div className="mt-5 flex items-center justify-between text-sm">
               <Link to="/forgot-password" className="text-primary-500 hover:text-primary-600 font-medium">

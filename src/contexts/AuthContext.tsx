@@ -87,18 +87,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return { error: null, role: fetchedRole }
   }
 
-  async function signInWithOAuth(provider: 'google' | 'linkedin' | 'linkedin_oidc') {
-    if (!supabase) return { error: 'Supabase is not configured' }
-    const actualProvider = provider === 'linkedin' ? 'linkedin_oidc' : provider
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: actualProvider,
-      options: {
-        redirectTo: `${window.location.origin}/`,
-      },
-    })
-    return { error: error?.message ?? null }
-  }
-
   async function signOut() {
     if (!supabase) return
     await supabase.auth.signOut()
@@ -115,7 +103,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   return (
     <AuthContext.Provider
-      value={{ user, session, role, loading, signUp, signIn, signInWithOAuth, signOut, resetPassword }}
+      value={{ user, session, role, loading, signUp, signIn, signOut, resetPassword }}
     >
       {children}
     </AuthContext.Provider>
