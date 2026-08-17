@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { Eye, EyeOff } from 'lucide-react'
 import BrandLogo from '@/components/layout/BrandLogo'
 import Button from '@/components/ui/Button'
+import SocialAuthButtons from '@/components/auth/SocialAuthButtons'
 import { useAuth } from '@/hooks/useAuth'
 import { useSeo } from '@/lib/seo'
 
@@ -109,6 +110,8 @@ export default function Login() {
               Sign In
             </Button>
           </form>
+
+          <SocialAuthButtons onError={(err) => setError(err)} />
 
           <div className="mt-5 flex items-center justify-between text-sm">
             <Link to="/forgot-password" className="text-primary-500 hover:text-primary-600 font-medium">

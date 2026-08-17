@@ -9,6 +9,7 @@ export interface AuthContextType {
   loading: boolean
   signUp: (email: string, password: string, fullName: string) => Promise<{ error: string | null }>
   signIn: (email: string, password: string) => Promise<{ error: string | null; role?: UserRole | null }>
+  signInWithOAuth: (provider: 'google' | 'linkedin' | 'linkedin_oidc') => Promise<{ error: string | null }>
   signOut: () => Promise<void>
   resetPassword: (email: string) => Promise<{ error: string | null }>
 }
