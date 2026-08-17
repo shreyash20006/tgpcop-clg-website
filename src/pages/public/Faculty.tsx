@@ -341,25 +341,48 @@ export default function Faculty() {
 
       <PageContainer className="py-10 md:py-14">
         {/* Top Summary Banner */}
-        <div className="bg-gradient-to-r from-navy-950 via-primary-950 to-navy-900 text-white rounded-2xl p-6 sm:p-8 mb-10 shadow-lg border border-primary-800/40">
-          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-            <div>
-              <div className="flex items-center gap-2 text-primary-300 text-xs sm:text-sm font-semibold uppercase tracking-wider mb-2">
+        <div className="relative overflow-hidden bg-navy-950 text-white rounded-2xl p-6 sm:p-8 lg:p-10 mb-10 shadow-xl border border-primary-800/40 group">
+          {/* Background Media with Gradient Overlay */}
+          <div className="absolute inset-0 z-0">
+            <img
+              src="https://res.cloudinary.com/dsqxboxoc/image/upload/v1786989542/ChatGPT_Image_Aug_17_2026_11_28_28_PM_fghe1e.png"
+              alt="TGPCOP Faculty & Academic Leadership"
+              className="w-full h-full object-cover object-center transform scale-105 group-hover:scale-100 transition-transform duration-700 opacity-25"
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-navy-950 via-navy-950/90 to-primary-950/80" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-primary-600/20 via-transparent to-transparent" />
+          </div>
+
+          <div className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
+            <div className="max-w-3xl">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-500/20 border border-primary-400/30 text-primary-300 text-xs sm:text-sm font-semibold uppercase tracking-wider mb-3 backdrop-blur-sm">
                 <Sparkles className="w-4 h-4 text-amber-400" />
                 Academic Excellence & Research
               </div>
-              <h2 className="font-heading font-bold text-2xl sm:text-3xl text-white">
+              <h2 className="font-heading font-bold text-2xl sm:text-3xl lg:text-4xl text-white tracking-tight leading-tight">
                 Our Distinguished Faculty
               </h2>
-              <p className="text-gray-300 text-sm sm:text-base mt-1.5 max-w-2xl leading-relaxed">
+              <p className="text-gray-200 text-sm sm:text-base mt-2 max-w-2xl leading-relaxed">
                 Meet our 22 accomplished educators in Pharmaceutics, Pharmaceutical Chemistry, Quality Assurance, and Pharmacology. Click on any faculty member with a profile link to view their detailed academic background, patents, and research works.
               </p>
             </div>
-            <div className="shrink-0 flex items-center gap-3 bg-white/10 backdrop-blur-sm px-5 py-3.5 rounded-xl border border-white/15">
-              <Users className="w-6 h-6 text-amber-400" />
-              <div>
-                <div className="text-2xl font-bold font-heading text-white">{ALL_FACULTY.length}</div>
-                <div className="text-xs text-gray-300 font-medium">Faculty Members</div>
+
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 shrink-0">
+              {/* Optional featured visual badge */}
+              <div className="hidden sm:block w-28 h-20 rounded-xl overflow-hidden border-2 border-white/20 shadow-md">
+                <img
+                  src="https://res.cloudinary.com/dsqxboxoc/image/upload/v1786989542/ChatGPT_Image_Aug_17_2026_11_28_28_PM_fghe1e.png"
+                  alt="Faculty Preview"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+
+              <div className="flex items-center gap-3 bg-white/10 backdrop-blur-md px-6 py-4 rounded-xl border border-white/20 shadow-lg">
+                <Users className="w-7 h-7 text-amber-400" />
+                <div>
+                  <div className="text-2xl sm:text-3xl font-bold font-heading text-white">{ALL_FACULTY.length}</div>
+                  <div className="text-xs text-gray-200 font-medium">Faculty Members</div>
+                </div>
               </div>
             </div>
           </div>
