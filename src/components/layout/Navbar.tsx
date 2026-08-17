@@ -21,9 +21,13 @@ const navLinks = [
     label: 'Academics',
     children: [
       { label: 'Programs', path: '/academics' },
-      { label: 'Faculty', path: '/faculty' },
+      { label: 'Faculty Directory', path: '/faculty' },
       { label: 'Departments', path: '/academics#departments' },
     ],
+  },
+  {
+    label: 'Faculty',
+    path: '/faculty',
   },
   {
     label: 'Admissions',
